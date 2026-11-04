@@ -6,6 +6,7 @@ dev = [
 
 [project]
 dependencies = [
+  "anthropic==2.4.0",
   "allure-pytest==2.15.0",
   "axe-playwright-python==0.1.5",
   "playwright==1.55.0",
@@ -46,6 +47,7 @@ markers = [
   "devRun: marks tests that run before merge to the main branch"
 ]
 pythonpath = ["src"]
+testpaths = ["tests"]
 
 [tool.ruff]
 exclude = [".venv", "env"]

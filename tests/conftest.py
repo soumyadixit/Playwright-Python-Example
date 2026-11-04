@@ -1,3 +1,6 @@
+# Modified from the original project: browser mode can be set with the HEADLESS environment variable.
+import os
+
 import allure
 import pytest
 import requests
@@ -110,7 +113,7 @@ def browser_type_launch_args(browser_type_launch_args: dict, playwright: Playwri
     playwright.selectors.set_test_id_attribute("data-test")
     return {
         **browser_type_launch_args,
-        "headless": False,
+        "headless": os.environ.get("HEADLESS") == "1",
         "args": [
             "--start-maximized",
             "--allow-file-access-from-files",

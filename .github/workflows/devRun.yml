@@ -12,6 +12,7 @@ on:
 permissions:
   contents: write
   pages: write
+  pull-requests: write
 
 jobs:
   merge_test:
@@ -33,8 +34,28 @@ jobs:
         run: |
           uv venv
           uv sync --all-extras --dev
+      - name: Test the agent's guardrails and logic
+        run: .venv/bin/python -m pytest agent_tests
       - name: Test with pytest
-        run:  xvfb-run .venv/bin/python -m pytest -m devRun --base-url ${{ vars.BASE_URL }}
+        run:  xvfb-run .venv/bin/python -m pytest -m devRun --base-url ${{ vars.BASE_URL }} --junitxml=junit.xml
+      - name: AI failure triage
+        if: failure() && hashFiles('junit.xml') != ''
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: .venv/bin/python -m agent triage --junit junit.xml --results test-results --output triage.md
+      - name: Post triage to the pull request
+        if: failure() && hashFiles('triage.md') != ''
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = require('fs').readFileSync('triage.md', 'utf8');
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: context.issue.number,
+              body,
+            });
       - name: Auto-assign reviewers
         uses: kentaro-m/auto-assign-action@v2.0.0
         if: success()
