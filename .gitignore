@@ -144,3 +144,8 @@ cython_debug/
 *allure-results
 *allure-report
 trace.zip
+
+# AI test agent working files
+.agent/
+junit.xml
+triage.md

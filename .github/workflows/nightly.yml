@@ -57,7 +57,7 @@ jobs:
       - name: Run Tests
         run: |
           xvfb-run .venv/bin/python -m pytest ${{ github.event.inputs.pytest_command || '-m "not devRun"' }} \
-            --base-url ${{ vars.BASE_URL }} \
+            --base-url ${{ vars.BASE_URL || 'https://www.saucedemo.com/' }} \
             --splits ${{ github.event.inputs.parallelism || 2 }} \
             --group ${{ matrix.group }}
       - name: Upload test results and artifacts
@@ -117,7 +117,7 @@ jobs:
         if: contains(needs.*.result, 'failure')
         run: echo ARTIFACT_URL=${{ steps.merged-artifact-upload.outputs.artifact-url }} >> environment.properties
       - name: Generate Allure Report
-        uses: simple-elf/allure-report-action@v1.13
+        uses: simple-elf/allure-report-action@v1.15
         if: always()
         id: allure-report
         with:

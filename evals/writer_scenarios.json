@@ -1,0 +1,52 @@
+[
+  {
+    "id": "locked_out_login",
+    "request": "A locked-out user who enters the correct password can't log in and sees an explanation.",
+    "expected_status": "passed",
+    "must_contain": ["locked_out_user", "locked out"],
+    "holdout": ["tests/login_test.py"]
+  },
+  {
+    "id": "invalid_password",
+    "request": "Logging in with a valid username and a wrong password shows an error message.",
+    "expected_status": "passed",
+    "must_contain": ["do not match"],
+    "holdout": ["tests/login_test.py"]
+  },
+  {
+    "id": "add_to_cart_badge",
+    "request": "When the standard user adds a product to the cart, the cart badge shows 1.",
+    "expected_status": "passed",
+    "must_contain": ["shopping-cart-badge"]
+  },
+  {
+    "id": "complete_checkout",
+    "request": "The standard user can buy a product from the cart through to the order confirmation.",
+    "expected_status": "passed",
+    "must_contain": ["Thank you for your order"]
+  },
+  {
+    "id": "sort_by_price",
+    "request": "Sorting products by price from low to high shows the prices in ascending order.",
+    "expected_status": "passed",
+    "must_contain": []
+  },
+  {
+    "id": "logout",
+    "request": "After logging out, the user is back on the login page.",
+    "expected_status": "passed",
+    "must_contain": ["logout-sidebar-link"]
+  },
+  {
+    "id": "problem_user_images",
+    "request": "For problem_user, each product on the inventory page shows its own distinct image.",
+    "expected_status": "bug_suspected",
+    "must_contain": ["problem_user"]
+  },
+  {
+    "id": "problem_user_checkout",
+    "request": "problem_user can enter a first name, last name and postal code on the checkout form, and every field keeps the value that was typed.",
+    "expected_status": "bug_suspected",
+    "must_contain": ["problem_user"]
+  }
+]

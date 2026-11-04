@@ -1,0 +1,52 @@
+name: AI test generation
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: 'The behavior to test, in plain English'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: |
+          uv venv
+          uv sync --all-extras --dev
+          .venv/bin/playwright install --with-deps chromium
+      - name: Run the agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Passed through the environment so the text can't be run as part of the script.
+          SCENARIO: ${{ inputs.scenario }}
+        run: .venv/bin/python -m agent write "$SCENARIO"
+      # Runs only if the agent's result was verified. It opens a draft for a person to
+      # review and never merges anything, and only the agent's two folders are included.
+      - name: Open a draft pull request for review
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: agent/generated-test-${{ github.run_id }}
+          title: 'AI-generated test: ${{ github.run_id }}'
+          commit-message: 'test: add AI-generated test from run ${{ github.run_id }}'
+          body-path: .agent/pr_body.md
+          add-paths: |
+            src/pages/*.py
+            tests/generated/*.py
+          draft: true

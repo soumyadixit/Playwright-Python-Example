@@ -1,0 +1,98 @@
+[
+  {
+    "id": "product_wrong_total",
+    "expected": "product_bug",
+    "test": "tests.checkout_test.TestCheckout::test_order_total",
+    "message": "AssertionError: Locator expected to have text 'Total: $32.39'\nActual value: Total: $0.00",
+    "details": "Item total on the same page shows $29.99 and tax shows $2.40. Locator resolved to <div data-test=\"total-label\">Total: $0.00</div>",
+    "trace": "Console errors:\n- TypeError: Cannot read properties of undefined (reading 'price') at cart.js:88"
+  },
+  {
+    "id": "product_server_error",
+    "expected": "product_bug",
+    "test": "tests.inventory_test.TestInventory::test_add_to_cart",
+    "message": "AssertionError: Locator expected to have text '1'\nActual value: <element(s) not found>",
+    "details": "The add-to-cart button was clicked successfully, but the cart badge never appeared.",
+    "trace": "Failed requests:\n- 500 POST https://shop.example.com/api/cart\nConsole errors:\n- Failed to load resource: the server responded with a status of 500"
+  },
+  {
+    "id": "product_locked_user_logged_in",
+    "expected": "product_bug",
+    "test": "tests.login_test.TestLogin::test_locked_user_rejected",
+    "message": "AssertionError: Locator expected to have text 'Epic sadface: Sorry, this user has been locked out.'\nActual value: <element(s) not found>",
+    "details": "After clicking login, the page URL is /inventory.html. A locked user reached the product list.",
+    "trace": "Last browser steps:\n- fill username\n- fill password\n- click login-button\n- expect error"
+  },
+  {
+    "id": "test_stale_locator",
+    "expected": "test_bug",
+    "test": "tests.inventory_test.TestInventory::test_title",
+    "message": "AssertionError: Locator expected to have text 'Products'\nActual value: <element(s) not found>",
+    "details": "waiting for get_by_test_id(\"page-title\"). The page snapshot contains <span data-test=\"title\">Products</span>, and the expected text is present under a different test id.",
+    "trace": ""
+  },
+  {
+    "id": "test_wrong_expected_text",
+    "expected": "test_bug",
+    "test": "tests.login_test.TestLogin::test_invalid_password",
+    "message": "AssertionError: Locator expected to have text 'Invalid password'\nActual value: Epic sadface: Username and password do not match any user in this service",
+    "details": "The application correctly rejected the login and showed its standard error. The test was written with placeholder wording.",
+    "trace": ""
+  },
+  {
+    "id": "test_strict_mode",
+    "expected": "test_bug",
+    "test": "tests.cart_test.TestCart::test_remove_item",
+    "message": "playwright._impl._errors.Error: Locator.click: Error: strict mode violation: get_by_role(\"button\", name=\"Remove\") resolved to 3 elements",
+    "details": "The test added three items and then used a locator that matches every Remove button.",
+    "trace": ""
+  },
+  {
+    "id": "flaky_no_wait",
+    "expected": "flaky",
+    "test": "tests.search_test.TestSearch::test_result_count",
+    "message": "AssertionError: assert 0 == 12",
+    "details": "count = page.locator('.result').count()  # a plain count() with no waiting, called immediately after clicking search. The same test passed on 9 of the last 10 runs of this commit.",
+    "trace": "Last browser steps:\n- click search\n- count .result\nThe results request finished 180ms after the count."
+  },
+  {
+    "id": "flaky_animation",
+    "expected": "flaky",
+    "test": "tests.menu_test.TestMenu::test_open_menu_link",
+    "message": "playwright._impl._errors.TimeoutError: Locator.click: Timeout 5000ms exceeded. element is not stable",
+    "details": "Waiting for element to be stable while the side menu animates. Passed on immediate re-run with no code changes.",
+    "trace": ""
+  },
+  {
+    "id": "flaky_order_dependent",
+    "expected": "flaky",
+    "test": "tests.cart_test.TestCart::test_empty_cart",
+    "message": "AssertionError: Locator expected to have count 0\nActual value: 1",
+    "details": "Tests share one account. The failure only happens when the suite is split so that test_add_item runs at the same time on another worker; it passes when run alone.",
+    "trace": ""
+  },
+  {
+    "id": "env_dns",
+    "expected": "environment",
+    "test": "tests.login_test.TestLogin::test_valid_login",
+    "message": "playwright._impl._errors.Error: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.saucedemo.com/",
+    "details": "Every test in this run failed at navigation with the same error.",
+    "trace": ""
+  },
+  {
+    "id": "env_browser_missing",
+    "expected": "environment",
+    "test": "tests.inventory_test.TestInventory::test_inventory_page",
+    "message": "playwright._impl._errors.Error: BrowserType.launch: Executable doesn't exist at /ms-playwright/chromium-1187/chrome-linux/chrome",
+    "details": "Looks like Playwright was updated without downloading new browsers. The failure happens before any page loads.",
+    "trace": ""
+  },
+  {
+    "id": "env_gateway",
+    "expected": "environment",
+    "test": "tests.checkout_test.TestCheckout::test_checkout_counter",
+    "message": "AssertionError: Locator expected to have text '2'\nActual value: <element(s) not found>",
+    "details": "The page body shows '502 Bad Gateway' from the load balancer on every URL. The status page reports a hosting provider outage during this run.",
+    "trace": "Failed requests:\n- 502 GET https://www.saucedemo.com/inventory.html"
+  }
+]
