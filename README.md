@@ -142,8 +142,9 @@ To inspect a failure, upload its `test-results/<test>/trace.zip` to the
 
 Repository setup:
 
-1. Add the `ANTHROPIC_API_KEY` secret and the `BASE_URL` variable (`https://www.saucedemo.com/`).
+1. Add the `ANTHROPIC_API_KEY` secret. Tests still run without it, but triage and test generation won't.
 2. Under **Settings > Actions > General**, allow GitHub Actions to create pull requests.
+3. Optional: set the `BASE_URL` variable to test another site. The default is SauceDemo.
 
 ## Credits
 

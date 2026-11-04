@@ -37,7 +37,7 @@ jobs:
       - name: Test the agent's guardrails and logic
         run: .venv/bin/python -m pytest agent_tests
       - name: Test with pytest
-        run:  xvfb-run .venv/bin/python -m pytest -m devRun --base-url ${{ vars.BASE_URL }} --junitxml=junit.xml
+        run:  xvfb-run .venv/bin/python -m pytest -m devRun --base-url ${{ vars.BASE_URL || 'https://www.saucedemo.com/' }} --junitxml=junit.xml
       - name: AI failure triage
         if: failure() && hashFiles('junit.xml') != ''
         continue-on-error: true
@@ -85,7 +85,7 @@ jobs:
            echo CHROME_VERSION=$(google-chrome --product-version)
           } >> environment.properties
       - name: Generate Allure Report
-        uses: simple-elf/allure-report-action@v1.13
+        uses: simple-elf/allure-report-action@v1.15
         if: always()
         id: allure-report
         with:
